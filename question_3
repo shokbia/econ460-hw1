@@ -58,7 +58,7 @@ for (n in n_values) {
        breaks = 30)
   abline(v = lambda, col = "red")
 }
-# Second row: upper endpoints 
+
 for (n in n_values) {
   hist(sims[[paste0("n", n)]]$ci_upper, 
        main = paste("Upper CI, n =", n),
