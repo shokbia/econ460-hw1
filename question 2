@@ -1,1 +1,37 @@
+set.seed(0)
+
+
+oj <- read.csv("/Users/baur/Downloads/oj (1).csv")
+
+
+oj$minutemaid <- as.integer(oj$brand == "minute.maid")
+oj$tropicana  <- as.integer(oj$brand == "tropicana")
+
+
+y <- log(oj$sales)
+X <- cbind(1, log(oj$price), oj$minutemaid, oj$tropicana)
+
+
+beta_hat <- solve(t(X) %*% X) %*% (t(X) %*% y)
+beta4_hat <- beta_hat[4]
+
+
+percent_est <- (exp(beta4_hat) - 1) * 100
+cat("Point estimate:", round(percent_est, 4), "%\n")
+
+
+B <- 1000
+n <- nrow(oj)
+boot_vals <- numeric(B)
+
+for (b in 1:B) {
+  idx <- sample(1:n, n, replace = TRUE)
+  Xb <- X[idx, ]
+  yb <- y[idx]
+  beta_b <- solve(t(Xb) %*% Xb) %*% (t(Xb) %*% yb)
+  boot_vals[b] <- (exp(beta_b[4]) - 1) * 100
+}
+
+ci <- quantile(boot_vals, c(0.025, 0.975))
+cat("95% CI:", sprintf("[%.4f%%, %.4f%%]", ci[1], ci[2]), "\n")
 
