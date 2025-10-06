@@ -139,3 +139,6 @@ for (n in n_values) {
   coverage <- mean(data$lower <= lambda & data$upper >= lambda)
   cat(sprintf("n = %3d: %.2f%%\n", n, coverage * 100))
 }
+
+# Question 3 summary output- n =  10: 95.50%, n =  50: 94.90%, n = 200: 95.10%
+# Hence, yes they are very close to 95
