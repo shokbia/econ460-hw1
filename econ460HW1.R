@@ -1,6 +1,6 @@
 #HW 1
 #ECON 460
-#
+#Bia Shok, Lara Li, Chloe Tjangnaka, Bauyrzhan Karashev, Edison Zhong
 
 #Oct 6, 2025
 
@@ -11,6 +11,7 @@ setwd("/Users/biashok/DSCI/Fall2025/ECON460/data")
 #read file
 oj <- read.csv('oj.csv')
 pickup_data <- read.csv('pickup.csv')
+
 #pickup_data <- read.csv("C:/Users/rawre/Downloads/pickup.csv")
 
 #1a
