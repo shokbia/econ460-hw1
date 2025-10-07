@@ -44,36 +44,31 @@ print(paste(
 #set.seed(0)
 #oj <- read.csv("/Users/baur/Downloads/oj (1).csv")
 
-oj$minutemaid <- as.integer(oj$brand == "minute.maid")
-oj$tropicana  <- as.integer(oj$brand == "tropicana")
+# factor variable 
+oj$brand <- factor(oj$brand)
 
+# Non-bootstrap
+OLS_model <- glm(log(sales) ~ log(price) + brand, data =oj)
+b4_hat = 100*(exp(coef(OLS_model)['brandtropicana'])-1)
+b4_hat
 
-y <- log(oj$sales)
-X <- cbind(1, log(oj$price), oj$minutemaid, oj$tropicana)
-
-
-beta_hat <- solve(t(X) %*% X) %*% (t(X) %*% y)
-beta4_hat <- beta_hat[4]
-
-
-percent_est <- (exp(beta4_hat) - 1) * 100
-cat("Point estimate:", round(percent_est, 4), "%\n")
-
-
-B <- 1000
+# Bootstrap
+B <- 1000 
 n <- nrow(oj)
-boot_vals <- numeric(B)
+bs_coeffs <- rep(NA, B)
 
-for (b in 1:B) {
-  idx <- sample(1:n, n, replace = TRUE)
-  Xb <- X[idx, ]
-  yb <- y[idx]
-  beta_b <- solve(t(Xb) %*% Xb) %*% (t(Xb) %*% yb)
-  boot_vals[b] <- (exp(beta_b[4]) - 1) * 100
+for(b in 1:B){
+  
+  bs_indices <- sample.int(n, replace=TRUE) #resample data
+  bs_data <- oj[bs_indices, ]
+  OLS_model <- glm(log(sales) ~ log(price) + brand, data =bs_data)
+  bs_coeffs[b]<- 100*(exp(coef(OLS_model)['brandtropicana'])-1) # calculate B4hat
 }
 
-ci <- quantile(boot_vals, c(0.025, 0.975))
-cat("95% CI:", sprintf("[%.4f%%, %.4f%%]", ci[1], ci[2]), "\n")
+# calculate 95% CI 
+CI_b4 <- mean(bs_coeffs) + c(-2,2)*sd(bs_coeffs)
+CI_b4
+
 
 #question 3
 #set.seed(0)
